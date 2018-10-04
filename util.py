@@ -72,19 +72,12 @@ def dataset (file_dir, sampling=None, sample_size=None, random_state=None):
     
     # Define Dataset
     dataframe = pd.read_csv(file_dir)
-    
-    #Define Information
-    def information (dataframe):
-        print('Rows:', dataframe.shape[0],', Columns:', dataframe.shape[1], '\n')
-        print('Column Names and Types:\n', dataframe.dtypes)
 
     # Sampling Dataset
     if sampling == True:
         dataframe = dataframe.sample(frac=sample_size, random_state=random_state)
-        information(dataframe)
         return dataframe
     else:
-        information(dataframe)
         return dataframe
 
 ################################################################################
@@ -788,6 +781,30 @@ def drop(dataframe, columns=None, drop_threshold=None):
         if percent >= drop_threshold:
             dropped_column.append(column)
     return dataframe.drop(dropped_column, 1)
+
+def dummy_variable(dataframe, cat_cols):
+    """
+     Create dummy variable from categorical columns.
+    
+    Parameters
+    ----------
+    
+    dataframe:    object, DataFrame
+        Dataframe which its duplicated rows and missing values
+        are going to be changed.
+
+    cat_cols:     array, string
+        Name of the categorical columns that are going to be changed as dummy variable.
+
+    Returns
+    -------
+    
+    Dataframe:
+        The function returns processed dataframe.
+
+    """
+    dataframe = pd.get_dummies(dataframe, columns=cat_cols, drop_first=True)
+    return dataframe
 
 ################################################################################
 #4. Train Test Sample
