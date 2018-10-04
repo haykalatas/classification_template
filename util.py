@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Meta informations.
-__version__ = '1.3'
+__version__ = '1.3.2'
 __author__ = 'Agil Haykal'
 __author_email__ = 'agil@datalabs.id'
 
@@ -513,12 +513,14 @@ def information_value(dataframe, feat_cols, target_col, weak_predictor=None):
             d4["NONEVENT"] = justmiss.count().Y - justmiss.sum().Y
             d3 = d3.append(d4,ignore_index=True)
         
-        d3["EVENT_RATE"] = d3.EVENT/d3.COUNT
-        d3["NON_EVENT_RATE"] = d3.NONEVENT/d3.COUNT
-        d3["DIST_EVENT"] = d3.EVENT/d3.sum().EVENT
-        d3["DIST_NON_EVENT"] = d3.NONEVENT/d3.sum().NONEVENT
-        d3["WOE"] = np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
-        d3["IV"] = (d3.DIST_EVENT-d3.DIST_NON_EVENT)*np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
+        d3["EVENT_RATE"] = d3.EVENT / d3.COUNT
+        d3["NON_EVENT_RATE"] = d3.NONEVENT / d3.COUNT
+        d3["DIST_EVENT"] = d3.EVENT / d3.sum().EVENT
+        d3["DIST_NON_EVENT"] = d3.NONEVENT / d3.sum().NONEVENT
+        d3.loc[d3["DIST_EVENT"] == 0, ["DIST_EVENT", "DIST_NON_EVENT"]] = 1
+        d3["WOE"] = np.log(d3.DIST_EVENT / d3.DIST_NON_EVENT)
+        d3["IV"] = (d3.DIST_EVENT-d3.DIST_NON_EVENT) * d3.WOE
+        
         d3["VAR_NAME"] = "VAR"
         d3 = d3[['VAR_NAME','MIN_VALUE', 'MAX_VALUE', 'COUNT', 'EVENT', 'EVENT_RATE', 'NONEVENT', 'NON_EVENT_RATE', 'DIST_EVENT','DIST_NON_EVENT','WOE', 'IV']]      
         d3 = d3.replace([np.inf, -np.inf], 0)
